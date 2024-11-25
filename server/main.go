@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"golang-todo-list/router"
 	"net/http"
+
+	"github.com/MurilojrMarques/golang-todo-list/router"
 )
 
 func main() {

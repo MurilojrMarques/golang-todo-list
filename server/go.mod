@@ -1,4 +1,4 @@
-module github.com/MuriloJrMarques/golang-todo-list
+module github.com/MurilojrMarques/golang-todo-list
 
 go 1.23.2
 

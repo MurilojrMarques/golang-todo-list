@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/MuriloJrMarques/golang-todo-list/models"
+	"github.com/MurilojrMarques/golang-todo-list/models"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
@@ -91,7 +91,7 @@ func UndoTask(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 	params := mux.Vars(r)
-	UndoTask(params["id"])
+	undoTask(params["id"])
 	json.NewEncoder(w).Encode(params["id"])
 }
 
@@ -145,14 +145,42 @@ func taskComplete(task string) {
 	fmt.Println("Status Alterado!", result.ModifiedCount)
 }
 
-func insertOneTask() {
+func insertOneTask(task models.ToDolist) {
+	inserResult, err := collection.InsertOne(context.Background(), task)
 
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Foi inserido uma nova tarefa!", inserResult)
 }
 
-func deleteOneTask() {
-
+func undoTask(task string) {
+	id, _ := primitive.ObjectIDFromHex(task)
+	filter := bson.M{"_id": id}
+	update := bson.M{"$set": bson.M{"status": true}}
+	result, err := collection.UpdateOne(context.Background(), filter, update)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Status Alterado!", result.ModifiedCount)
 }
 
-func deleteAllTask() {
+func deleteOneTask(task string) {
+	id, _ := primitive.ObjectIDFromHex(task)
+	filter := bson.M{"_id": id}
+	delete, err := collection.DeleteOne(context.Background(), filter)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Tarefa excluída com sucesso!", delete.DeletedCount)
+}
 
+func deleteAllTask() int64 {
+	delete, err := collection.DeleteMany(context.Background(), bson.D{{}})
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Todas tarefas foram deletadas", delete.DeletedCount)
+	return delete.DeletedCount
 }
