@@ -19,14 +19,14 @@ class ToDoList extends Component{
 
     onChange = (event) =>{
         this.setState({
-            [event.target.name] : event.targe.value,
+            [event.target.name] : event.target.value,
         });
     }
 
     onSubmit
 
     getTask = () =>{
-        axios.get(endpoint + "api/tasks").then((res)=>{
+        axios.get(endpoint + "/api/tasks").then((res)=>{
             if(res.data){
                 this.setState({
                     items: res.data.map((item)=>{
